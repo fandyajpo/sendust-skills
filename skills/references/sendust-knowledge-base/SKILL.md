@@ -7,7 +7,7 @@ description: Find and use authoritative technical references for Sendust — Rus
 
 Sendust learns through this reference catalog: `references.md` in this skill folder lists every approved knowledge source, organized into 17 domains. Use it whenever a task requires looking up how something actually works.
 
-**See also:** [sendust-engineering](../sendust-engineering/SKILL.md) for how a task selects its reading · [sendust-architecture](../sendust-architecture/SKILL.md) for the architecture these references constrain · [sendust-security](../sendust-security/SKILL.md) for the security envelope · [sendust-evidence](../sendust-evidence/SKILL.md) for RFC-compliance evidence rules.
+**See also:** [sendust-task-workflow](../../engineering/sendust-task-workflow/SKILL.md) for how a task selects its reading · [sendust-crate-and-module-boundaries](../../architecture/sendust-crate-and-module-boundaries/SKILL.md) for the architecture these references constrain · [sendust-threat-register](../../security/sendust-threat-register/SKILL.md) for the security envelope · [sendust-evidence-and-gates](../../quality/sendust-evidence-and-gates/SKILL.md) for RFC-compliance evidence rules.
 
 ## 1. Source-of-truth hierarchy
 
@@ -45,7 +45,7 @@ Match the domain to the task at hand; do not consult everything for every task.
 - Verify the current status of every RFC before relying on it: obsolete, updated, or superseded.
 - Verify crate versions, feature flags, and runtime compatibility against the pinned versions in `docs/engineering/toolchain-baseline.md` and the admission rules in `docs/engineering/dependency-policy.md` in the sendust repository.
 - Do not assume every SMTP extension is universally supported by every provider; provider docs (SES, Gmail, Exchange, Resend, Postmark, Mailgun, SendGrid, Brevo) are behavioral references for interoperability, not standards.
-- Validate protocol behavior through automated tests and interoperability tests, and record evidence per the sendust-evidence skill. Never claim RFC compliance without corresponding test evidence.
+- Validate protocol behavior through automated tests and interoperability tests, and record evidence per the sendust-evidence-and-gates skill. Never claim RFC compliance without corresponding test evidence.
 - Crate docs are pinned to the sendust versions (lettre 0.11.23, napi 3.16.2, rustls 0.23, tokio 1.x); behavior of a different version is irrelevant unless the baseline changes.
 
 ## 4. Implementation guidelines (normative)

@@ -2,22 +2,56 @@
 
 Reusable agent skills for [Sendust](https://github.com/fandyajpo/sendust), a standalone native email delivery engine (Rust core, Node-API adapter, TypeScript facade, for Node.js, Bun, and Deno).
 
-Each skill distills Sendust's normative documentation (`AGENTS.md` and `docs/` in the main repository) into an agent-consumable skill: a folder under `skills/` containing a `SKILL.md` with YAML front matter (`name`, `description`).
+Each skill distills Sendust's normative documentation (`AGENTS.md` and `docs/` in the main repository) into an agent-consumable skill: a folder under `skills/<category>/<skill-name>/` containing a `SKILL.md` with YAML front matter (`name`, `description`). Skills are deliberately small and single-purpose, grouped by category, so an agent can jump straight to the one it needs.
 
-## Skills
+## Skills by category
+
+### engineering — how work happens
 
 | Skill | Use when |
 | --- | --- |
-| [sendust-engineering](skills/sendust-engineering/SKILL.md) | Implementing, planning, or reviewing any Sendust task (`Pxx-00y`) in the sendust repository |
-| [sendust-architecture](skills/sendust-architecture/SKILL.md) | Changing module structure, adding dependencies, or touching crate/runtime boundaries |
-| [sendust-docs-sync](skills/sendust-docs-sync/SKILL.md) | Updating any source-of-truth document (requirements, ADRs, phases, registry, gates, summaries) |
-| [sendust-evidence](skills/sendust-evidence/SKILL.md) | Reporting completed work, running validation, or judging phase-gate approval |
-| [sendust-security](skills/sendust-security/SKILL.md) | Implementing SMTP/TLS, attachments, logging, errors, or anything near the threat boundary |
-| [sendust-knowledge-base](skills/sendust-knowledge-base/SKILL.md) | Looking up RFCs, crate APIs, runtime compatibility, or any technical reference before making decisions |
+| [sendust-task-workflow](skills/engineering/sendust-task-workflow/SKILL.md) | Starting, implementing, or reviewing any Sendust task (`Pxx-00y`) |
+| [sendust-phase-map](skills/engineering/sendust-phase-map/SKILL.md) | Picking the next task, checking prerequisites, or reporting phase status |
+
+### architecture — how the engine is shaped
+
+| Skill | Use when |
+| --- | --- |
+| [sendust-crate-and-module-boundaries](skills/architecture/sendust-crate-and-module-boundaries/SKILL.md) | Creating or moving code between modules, or touching the TypeScript/native/core boundaries |
+| [sendust-core-semantics](skills/architecture/sendust-core-semantics/SKILL.md) | Implementing or modifying `send()`, `close()`, validation, MIME, or error mapping |
+| [sendust-dependency-policy](skills/architecture/sendust-dependency-policy/SKILL.md) | Adding or changing any Rust crate, npm dependency, or GitHub Action |
+
+### documentation — keeping the sources of truth consistent
+
+| Skill | Use when |
+| --- | --- |
+| [sendust-docs-sync](skills/documentation/sendust-docs-sync/SKILL.md) | Updating requirements, ADRs, phase plans, the registry, toolchain pins, API contracts, gates, or summaries |
+
+### quality — proving the work is real
+
+| Skill | Use when |
+| --- | --- |
+| [sendust-evidence-and-gates](skills/quality/sendust-evidence-and-gates/SKILL.md) | Finishing a task, claiming completion, or evaluating a phase gate |
+| [sendust-validation-commands](skills/quality/sendust-validation-commands/SKILL.md) | Preparing validation instructions, CI evidence, or external validation steps |
+
+### security — staying inside the threat envelope
+
+| Skill | Use when |
+| --- | --- |
+| [sendust-tls-and-transport-security](skills/security/sendust-tls-and-transport-security/SKILL.md) | Implementing or testing TLS, STARTTLS, AUTH, or relay connections |
+| [sendust-input-validation-and-caps](skills/security/sendust-input-validation-and-caps/SKILL.md) | Implementing validation, MIME inputs, attachments, or limits |
+| [sendust-redaction-and-diagnostics](skills/security/sendust-redaction-and-diagnostics/SKILL.md) | Touching logging, errors, panic handling, or the FFI boundary |
+| [sendust-threat-register](skills/security/sendust-threat-register/SKILL.md) | Assessing a change against the threat model or planning security phases |
+
+### references — where to look things up
+
+| Skill | Use when |
+| --- | --- |
+| [sendust-knowledge-base](skills/references/sendust-knowledge-base/SKILL.md) | Looking up RFCs, crate APIs, runtime compatibility, or any technical reference before deciding |
 
 ## How to use
 
-Point an agent at the skill folder it needs (or install the whole `skills/` directory into your agent's skills location). Each `SKILL.md` is self-contained: it states the rules and names the authoritative document paths in the sendust repository to read next. Every skill also carries a **See also** line linking its companion skills, so an agent entering through one skill can navigate to the others without leaving the set.
+Point an agent at the skill folder it needs (or install the whole `skills/` directory into your agent's skills location). Each `SKILL.md` is self-contained: it states the rules and names the authoritative document paths in the sendust repository to read next. Every skill carries a **See also** line linking its companion skills, so an agent entering through one skill can navigate to the others without leaving the set.
 
 ## Authority
 

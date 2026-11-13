@@ -1,13 +1,13 @@
 ---
 name: sendust-docs-sync
-description: Synchronize Sendust documentation after any change — the dependent-document sync map, authority precedence, ID conventions, status model, and the documentation consistency gate. Use when updating requirements, ADRs, phase plans, the task registry, toolchain pins, API contracts, gates, or summary documents.
+description: Synchronize Sendust documentation after a change — dependent-document sync map, authority precedence, ID conventions, status model, automated checkers, and the consistency gate. Use when updating requirements, ADRs, phase plans, the task registry, toolchain pins, API contracts, gates, or summaries.
 ---
 
 # Sendust documentation synchronization
 
 Source of the rules: `docs/engineering/ai-implementation-contract.md` §5.5 and §10 in the sendust repository. The rule: when a source-of-truth document changes, update every affected dependent document **in the same change**. Never update a summary without updating its authoritative source; never leave stale contradictory text elsewhere.
 
-**See also:** [sendust-engineering](../sendust-engineering/SKILL.md) for the workflow that triggers syncing · [sendust-evidence](../sendust-evidence/SKILL.md) for evidence levels that status updates must cite · [sendust-architecture](../sendust-architecture/SKILL.md) when an ADR is involved.
+**See also:** [sendust-task-workflow](../sendust-task-workflow/SKILL.md) for the workflow that triggers syncing · [sendust-phase-map](../sendust-phase-map/SKILL.md) for the document ownership map · [sendust-evidence-and-gates](../../quality/sendust-evidence-and-gates/SKILL.md) for evidence labels that status updates must cite.
 
 ## 1. Authority precedence (what wins when documents conflict)
 
@@ -58,14 +58,14 @@ A task is COMPLETED only with evidence per `docs/planning/definition-of-done.md`
 
 ## 6. Automated consistency checking
 
-The repository ships two checkers that must stay valid after every docs change (canonical commands from the toolchain baseline, run from the repository root):
+Two checkers must stay valid after every docs change (canonical commands, run from the repository root):
 
 - `node scripts/check-docs.mjs` — Markdown links, duplicate/missing IDs, phase/task counts, registry-to-phase title/prerequisite parity, gate-index coverage, and runtime/toolchain claims against the baseline.
 - `node scripts/check-architecture.mjs` — exactly two Rust packages; dependency direction and forbidden dependencies.
 
-These commands are contract commands; label them NOT RUN until an execution-capable environment actually runs them.
+These are contract commands; label them NOT RUN until an execution-capable environment actually runs them (see [sendust-validation-commands](../../quality/sendust-validation-commands/SKILL.md)).
 
-## 7. Documentation consistency gate (check before finishing any docs change)
+## 7. Documentation consistency gate (before finishing any docs change)
 
 - One canonical definition per requirement, decision, task, and gate.
 - All referenced IDs exist and are unique.
