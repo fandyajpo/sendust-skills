@@ -17,7 +17,7 @@ Each skill distills Sendust's normative documentation (`AGENTS.md` and `docs/` i
 
 ## How to use
 
-Point an agent at the skill folder it needs (or install the whole `skills/` directory into your agent's skills location). Each `SKILL.md` is self-contained: it states the rules and names the authoritative document paths in the sendust repository to read next.
+Point an agent at the skill folder it needs (or install the whole `skills/` directory into your agent's skills location). Each `SKILL.md` is self-contained: it states the rules and names the authoritative document paths in the sendust repository to read next. Every skill also carries a **See also** line linking its companion skills, so an agent entering through one skill can navigate to the others without leaving the set.
 
 ## Authority
 
