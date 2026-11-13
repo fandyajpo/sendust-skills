@@ -13,6 +13,7 @@ Each skill distills Sendust's normative documentation (`AGENTS.md` and `docs/` i
 | [sendust-docs-sync](skills/sendust-docs-sync/SKILL.md) | Updating any source-of-truth document (requirements, ADRs, phases, registry, gates, summaries) |
 | [sendust-evidence](skills/sendust-evidence/SKILL.md) | Reporting completed work, running validation, or judging phase-gate approval |
 | [sendust-security](skills/sendust-security/SKILL.md) | Implementing SMTP/TLS, attachments, logging, errors, or anything near the threat boundary |
+| [sendust-knowledge-base](skills/sendust-knowledge-base/SKILL.md) | Looking up RFCs, crate APIs, runtime compatibility, or any technical reference before making decisions |
 
 ## How to use
 
