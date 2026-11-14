@@ -74,6 +74,8 @@ If any task or change drifts toward these, stop and re-anchor to the sendust ADR
 
 Point an agent at the skill folder it needs (or install the whole `skills/` directory into your agent's skills location). Each `SKILL.md` is self-contained: it states the rules and names the authoritative document paths in the sendust repository to read next. Every skill carries a **See also** line linking its companion skills, so an agent entering through one skill can navigate to the others without leaving the set.
 
+To start (or restart) an agent on the codebase — including the revamp toward the native SMTP client — paste [AGENT-KICKOFF.md](AGENT-KICKOFF.md) as the agent's first message, or copy its content into the codebase's `AGENTS.md` / `CLAUDE.md` so every session begins with it.
+
 ## Authority
 
 These skills are summaries. They never override Sendust's own documentation. If a skill and the sendust repository disagree, the sendust repository wins:
