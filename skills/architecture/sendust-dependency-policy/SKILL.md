@@ -5,6 +5,8 @@ description: Decide whether a new dependency is allowed in Sendust — exact pin
 
 # Sendust dependency policy
 
+> Scope: this skill only serves building Sendust — the standalone native email delivery engine (Rust core → native Node-API addon → thin TS facade). Anything else (SMTP server, hosted service, queue, alternate transport, pure-JS engine) is out of scope.
+
 Authoritative source: `docs/engineering/dependency-policy.md` in the sendust repository; version pins live only in `docs/engineering/toolchain-baseline.md`. Applies to every Rust crate, npm package, GitHub Action, and test fixture source.
 
 **See also:** [sendust-crate-and-module-boundaries](../sendust-crate-and-module-boundaries/SKILL.md) for the boundary a dependency must not cross · [sendust-validation-commands](../../quality/sendust-validation-commands/SKILL.md) for the evidence commands · [sendust-evidence-and-gates](../../quality/sendust-evidence-and-gates/SKILL.md) for labeling evidence.

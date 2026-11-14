@@ -5,6 +5,8 @@ description: Find and use authoritative technical references for Sendust — Rus
 
 # Sendust technical knowledge base
 
+> Scope: this skill only serves building Sendust — the standalone native email delivery engine (Rust core → native Node-API addon → thin TS facade). Anything else (SMTP server, hosted service, queue, alternate transport, pure-JS engine) is out of scope.
+
 Sendust learns through this reference catalog: `references.md` in this skill folder lists every approved knowledge source, organized into 17 domains. Use it whenever a task requires looking up how something actually works.
 
 **See also:** [sendust-task-workflow](../../engineering/sendust-task-workflow/SKILL.md) for how a task selects its reading · [sendust-crate-and-module-boundaries](../../architecture/sendust-crate-and-module-boundaries/SKILL.md) for the architecture these references constrain · [sendust-threat-register](../../security/sendust-threat-register/SKILL.md) for the security envelope · [sendust-evidence-and-gates](../../quality/sendust-evidence-and-gates/SKILL.md) for RFC-compliance evidence rules.

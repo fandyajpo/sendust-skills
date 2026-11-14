@@ -5,6 +5,8 @@ description: Synchronize Sendust documentation after a change — dependent-docu
 
 # Sendust documentation synchronization
 
+> Scope: this skill only serves building Sendust — the standalone native email delivery engine (Rust core → native Node-API addon → thin TS facade). Anything else (SMTP server, hosted service, queue, alternate transport, pure-JS engine) is out of scope.
+
 Source of the rules: `docs/engineering/ai-implementation-contract.md` §5.5 and §10 in the sendust repository. The rule: when a source-of-truth document changes, update every affected dependent document **in the same change**. Never update a summary without updating its authoritative source; never leave stale contradictory text elsewhere.
 
 **See also:** [sendust-task-workflow](../sendust-task-workflow/SKILL.md) for the workflow that triggers syncing · [sendust-phase-map](../sendust-phase-map/SKILL.md) for the document ownership map · [sendust-evidence-and-gates](../../quality/sendust-evidence-and-gates/SKILL.md) for evidence labels that status updates must cite.

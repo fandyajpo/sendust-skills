@@ -5,6 +5,8 @@ description: Prevent Sendust diagnostics from leaking sensitive data — the red
 
 # Sendust redaction and diagnostics
 
+> Scope: this skill only serves building Sendust — the standalone native email delivery engine (Rust core → native Node-API addon → thin TS facade). Anything else (SMTP server, hosted service, queue, alternate transport, pure-JS engine) is out of scope.
+
 Sources in the sendust repository: `docs/engineering/security-strategy.md` §7–§8, `docs/architecture/error-model.md` §6–§7, ADR-0008 (owned memory), ADR-0013 (error taxonomy). Related abuse cases: AB-07, AB-11, AB-12 (see [sendust-threat-register](../sendust-threat-register/SKILL.md)).
 
 **See also:** [sendust-tls-and-transport-security](../sendust-tls-and-transport-security/SKILL.md) for credential handling in AUTH · [sendust-input-validation-and-caps](../sendust-input-validation-and-caps/SKILL.md) for path redaction in attachment errors.

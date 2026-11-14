@@ -5,6 +5,8 @@ description: Locate work in the Sendust plan — all 19 phases with status and g
 
 # Sendust phase map
 
+> Scope: this skill only serves building Sendust — the standalone native email delivery engine (Rust core → native Node-API addon → thin TS facade). Anything else (SMTP server, hosted service, queue, alternate transport, pure-JS engine) is out of scope.
+
 Sources in the sendust repository: `docs/planning/phase-index.md`, `master-roadmap.md`, `task-registry.md`, `dependency-graph.md`, `milestones.md`, and the phase plans in `docs/phases/`.
 
 **See also:** [sendust-task-workflow](../sendust-task-workflow/SKILL.md) for how to execute a task · [sendust-evidence-and-gates](../../quality/sendust-evidence-and-gates/SKILL.md) for gate and status rules · [sendust-docs-sync](../../documentation/sendust-docs-sync/SKILL.md) for the status model.

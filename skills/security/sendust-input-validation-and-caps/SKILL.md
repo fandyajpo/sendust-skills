@@ -5,6 +5,8 @@ description: Validate every Sendust input and enforce the hard caps — per-fiel
 
 # Sendust input validation and caps
 
+> Scope: this skill only serves building Sendust — the standalone native email delivery engine (Rust core → native Node-API addon → thin TS facade). Anything else (SMTP server, hosted service, queue, alternate transport, pure-JS engine) is out of scope.
+
 Sources in the sendust repository: `docs/engineering/security-strategy.md` §5–§6 and §9, `docs/architecture/system-design.md` §2.2/§2.7, `docs/architecture/error-model.md`, `docs/engineering/testing-strategy.md` §5. Related abuse cases: AB-03, AB-04, AB-05, AB-06, AB-07 (see [sendust-threat-register](../sendust-threat-register/SKILL.md)).
 
 **See also:** [sendust-core-semantics](../../architecture/sendust-core-semantics/SKILL.md) for the deterministic validation order these rules slot into · [sendust-crate-and-module-boundaries](../../architecture/sendust-crate-and-module-boundaries/SKILL.md) for the owning modules.

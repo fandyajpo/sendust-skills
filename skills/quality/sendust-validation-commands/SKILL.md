@@ -5,6 +5,8 @@ description: Run the exact validation Sendust requires — the canonical command
 
 # Sendust validation commands
 
+> Scope: this skill only serves building Sendust — the standalone native email delivery engine (Rust core → native Node-API addon → thin TS facade). Anything else (SMTP server, hosted service, queue, alternate transport, pure-JS engine) is out of scope.
+
 Source: `docs/engineering/toolchain-baseline.md` §4–§5 in the sendust repository — the single source of truth for tool pins and canonical commands. All commands run from the repository root; JavaScript scripts run in the `./ts` npm workspace. Exact pins: Rust 1.100.0 (MSRV 1.88.0, edition 2024), Node.js 22.23.5 / 24.22.3 / 26.13.1, Bun 1.4.4, Deno 2.9.8, npm 12.2.2, TypeScript 7.0.2, Biome 2.6.7, Vitest 5.1.0.
 
 **See also:** [sendust-evidence-and-gates](../sendust-evidence-and-gates/SKILL.md) for how to label the results · [sendust-dependency-policy](../../architecture/sendust-dependency-policy/SKILL.md) for what the dependency commands prove.

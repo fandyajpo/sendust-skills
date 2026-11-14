@@ -5,6 +5,8 @@ description: Preserve approved Sendust runtime semantics — deterministic valid
 
 # Sendust core semantics
 
+> Scope: this skill only serves building Sendust — the standalone native email delivery engine (Rust core → native Node-API addon → thin TS facade). Anything else (SMTP server, hosted service, queue, alternate transport, pure-JS engine) is out of scope.
+
 Authoritative sources in the sendust repository: `docs/architecture/system-design.md`, `error-model.md`, `data-flow.md`, `public-api.md`, ADR-0005 (recipient partial failure), ADR-0006 (single send lifecycle), ADR-0007 (timeout budgets), ADR-0009 (hard caps), ADR-0013 (error taxonomy). Exact Rust names are implementation details; the approved semantics are fixed and must not drift.
 
 **See also:** [sendust-crate-and-module-boundaries](../sendust-crate-and-module-boundaries/SKILL.md) for where each behavior lives · [sendust-input-validation-and-caps](../../security/sendust-input-validation-and-caps/SKILL.md) for the per-field rules · [sendust-tls-and-transport-security](../../security/sendust-tls-and-transport-security/SKILL.md) for TLS/auth behavior.

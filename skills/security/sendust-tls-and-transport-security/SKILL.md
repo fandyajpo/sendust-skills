@@ -5,6 +5,8 @@ description: Keep Sendust SMTP connections inside the TLS envelope — implicit 
 
 # Sendust TLS and transport security
 
+> Scope: this skill only serves building Sendust — the standalone native email delivery engine (Rust core → native Node-API addon → thin TS facade). Anything else (SMTP server, hosted service, queue, alternate transport, pure-JS engine) is out of scope.
+
 Sources in the sendust repository: `docs/engineering/security-strategy.md` §3–§4, `docs/architecture/system-design.md` §2.6, `docs/engineering/test-harness-contract.md`, ADR-0002 (lettre), ADR-0003 (TLS rustls/ring/webpki). Related abuse cases: AB-01, AB-02, AB-08, AB-09 (see [sendust-threat-register](../sendust-threat-register/SKILL.md)).
 
 **See also:** [sendust-core-semantics](../../architecture/sendust-core-semantics/SKILL.md) for the SMTP orchestration sequence · [sendust-redaction-and-diagnostics](../sendust-redaction-and-diagnostics/SKILL.md) for credential handling · [sendust-knowledge-base](../../references/sendust-knowledge-base/SKILL.md) for TLS references.

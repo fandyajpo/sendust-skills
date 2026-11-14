@@ -5,6 +5,8 @@ description: Report Sendust work honestly — the six evidence labels, forbidden
 
 # Sendust evidence and gates
 
+> Scope: this skill only serves building Sendust — the standalone native email delivery engine (Rust core → native Node-API addon → thin TS facade). Anything else (SMTP server, hosted service, queue, alternate transport, pure-JS engine) is out of scope.
+
 Normative source: `docs/engineering/ai-implementation-contract.md` §6–§9 and `docs/planning/definition-of-done.md` in the sendust repository.
 
 **See also:** [sendust-validation-commands](../sendust-validation-commands/SKILL.md) for the exact commands evidence must cite · [sendust-task-workflow](../../engineering/sendust-task-workflow/SKILL.md) for the workflow whose report this formats · [sendust-docs-sync](../../documentation/sendust-docs-sync/SKILL.md) for the status model behind status updates.

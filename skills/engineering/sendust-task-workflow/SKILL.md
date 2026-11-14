@@ -5,6 +5,8 @@ description: Execute a Sendust repository task (Pxx-00y) correctly — required 
 
 # Sendust task workflow
 
+> Scope: this skill only serves building Sendust — the standalone native email delivery engine (Rust core → native Node-API addon → thin TS facade). Anything else (SMTP server, hosted service, queue, alternate transport, pure-JS engine) is out of scope.
+
 Work in the sendust repository is doc-driven and task-based. The normative contract is `docs/engineering/ai-implementation-contract.md` and `AGENTS.md` in the sendust repository; this skill operationalizes them for a single task.
 
 **See also:** [sendust-phase-map](../sendust-phase-map/SKILL.md) to find the task and its prerequisites · [sendust-crate-and-module-boundaries](../../architecture/sendust-crate-and-module-boundaries/SKILL.md) before moving code · [sendust-evidence-and-gates](../../quality/sendust-evidence-and-gates/SKILL.md) when reporting · [sendust-docs-sync](../../documentation/sendust-docs-sync/SKILL.md) when any source-of-truth document changes.

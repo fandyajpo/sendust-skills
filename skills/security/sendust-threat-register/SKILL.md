@@ -5,6 +5,8 @@ description: Check Sendust threats and their required mitigations — assets, tr
 
 # Sendust threat register
 
+> Scope: this skill only serves building Sendust — the standalone native email delivery engine (Rust core → native Node-API addon → thin TS facade). Anything else (SMTP server, hosted service, queue, alternate transport, pure-JS engine) is out of scope.
+
 Sources in the sendust repository: `docs/discovery/threat-model.md` (assets, boundaries, AB register), `docs/engineering/security-strategy.md` (controls, checkpoints, incident response), `docs/planning/risk-registry.md`.
 
 **See also:** the focused skills for each mitigation — [sendust-tls-and-transport-security](../sendust-tls-and-transport-security/SKILL.md) · [sendust-input-validation-and-caps](../sendust-input-validation-and-caps/SKILL.md) · [sendust-redaction-and-diagnostics](../sendust-redaction-and-diagnostics/SKILL.md) — and [sendust-evidence-and-gates](../../quality/sendust-evidence-and-gates/SKILL.md) for how each AB row's evidence is recorded.

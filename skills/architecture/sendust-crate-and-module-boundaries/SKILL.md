@@ -5,6 +5,8 @@ description: Apply Sendust structural rules — the two-crate workspace, the TS 
 
 # Sendust crate and module boundaries
 
+> Scope: this skill only serves building Sendust — the standalone native email delivery engine (Rust core → native Node-API addon → thin TS facade). Anything else (SMTP server, hosted service, queue, alternate transport, pure-JS engine) is out of scope.
+
 Authoritative sources in the sendust repository: `docs/architecture/overview.md`, `system-design.md`, ADR-0001 (two crates), ADR-0004 (napi async/tokio), ADR-0008 (owned memory), ADR-0015 (multi-runtime), ADR-0016 (modular monolith), and `scripts/check-architecture.mjs`.
 
 **See also:** [sendust-core-semantics](../sendust-core-semantics/SKILL.md) for runtime behavior rules · [sendust-dependency-policy](../sendust-dependency-policy/SKILL.md) before adding any dependency · [sendust-task-workflow](../../engineering/sendust-task-workflow/SKILL.md) for the process.

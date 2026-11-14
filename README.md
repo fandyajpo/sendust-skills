@@ -4,6 +4,25 @@ Reusable agent skills for [Sendust](https://github.com/fandyajpo/sendust), a sta
 
 Each skill distills Sendust's normative documentation (`AGENTS.md` and `docs/` in the main repository) into an agent-consumable skill: a folder under `skills/<category>/<skill-name>/` containing a `SKILL.md` with YAML front matter (`name`, `description`). Skills are deliberately small and single-purpose, grouped by category, so an agent can jump straight to the one it needs.
 
+## Mission — the only purpose of these skills
+
+These skills exist to guide agents to build **Sendust as a standalone, native email delivery engine**: a runtime-independent Rust core compiled into a native Node-API addon, exposed through a thin TypeScript facade, embeddable by Node.js, Bun, and Deno applications that submit mail through a consumer-configured SMTP relay.
+
+In scope — everything that serves building that native engine:
+
+- Rust core behavior: validation, message model, MIME, transport state machine, SMTP orchestration.
+- The native binding (`sendust-napi`), its owned-memory conversion and error mapping.
+- The thin TypeScript facade, the isolated native loader, and the pinned toolchain that compiles the native artifact.
+- Tests, CI evidence, security envelope, and packaging/distribution of the native artifact.
+
+Out of scope — never the goal of this repo or the engine, in any skill or task:
+
+- An SMTP server, MTA, hosted/SaaS email service, mailbox platform, campaign manager, or job scheduler.
+- Queues, workers, persistence, retry engines, or delivery orchestration — the consuming application owns those.
+- Additional or alternate transports (SES, SendGrid, HTTP APIs), plugins, or a non-native (pure JavaScript) reimplementation of the engine.
+
+If any task or change drifts toward these, stop and re-anchor to the sendust ADRs and the [crate and module boundaries](skills/architecture/sendust-crate-and-module-boundaries/SKILL.md).
+
 ## Skills by category
 
 ### engineering — how work happens
