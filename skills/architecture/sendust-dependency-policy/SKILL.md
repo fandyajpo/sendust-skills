@@ -15,19 +15,21 @@ Authoritative source: `docs/engineering/dependency-policy.md` in the sendust rep
 
 | Crate | Pin | Kind | Features | Owner crate | Purpose |
 | --- | --- | --- | --- | --- | --- |
-| `lettre` | `=0.11.23` | normal | `smtp-transport`, `tokio1-rustls`, `ring`, `webpki-roots`, default off | `sendust-core` | only MVP outbound transport |
+| `tokio` | pinned exact at ADR-0017 adoption (tokio 1.x line) | normal | `rt-multi-thread`, `net`, `io-util`, `time`, `sync` | `sendust-core` | async runtime for the native SMTP client; executor shared with the napi-managed runtime |
+| `rustls` | `=0.23` line, ring provider, pinned exact at ADR-0017 adoption | normal | `ring`, `std`, default off | `sendust-core` | TLS for implicit TLS and STARTTLS |
+| `webpki-roots` | pinned exact at ADR-0017 adoption | normal | — | `sendust-core` | trust anchors; no bypass |
 | `napi` | `=3.16.2` | normal | `napi8`, `async` | `sendust-napi` | Node-API 8 binding |
 | `napi-derive` | `=3.7.0` | normal | — | `sendust-napi` | binding macros |
 | `napi-build` | `=2.6.0` | build | — | `sendust-napi` | build setup |
 
 - `sendust-core` declares no build script and no binding, runtime, or Node.js dependency.
 - `sendust-napi` depends on `sendust-core`, never the reverse.
-- `lettre` is declared once at workspace level and must not appear in `sendust-napi`.
+- SMTP transport code lives only in `sendust-core::transports::smtp`; no SMTP code appears in `sendust-napi`.
 - Test-only dependencies (mail-parser for MIME verification, benchmark tooling) are added by the phase that needs them, pinned exactly, recorded with kind `dev`, and never enabled for published artifacts.
 
 ## 2. Feature and transitive policy
 
-- lettre's default `pool` and `native-tls` features must never resolve — pooling and connection reuse are outside MVP scope.
+- No SMTP library exists in the MVP dependency set at all — the client is hand-written per ADR-0017 (superseding ADR-0002), so no pooling, native-tls, or hidden feature can slip in.
 - TLS uses the rustls `ring` provider with `webpki-roots`; verification is always on. No configuration, feature, or method that disables it may be added.
 - Feature flags are declared once at workspace level; enabling an optional capability per crate to work around a pin is a policy violation.
 - A dependency that pulls OpenSSL, `native-tls`, or a second TLS stack blocks the change.
@@ -45,7 +47,7 @@ npm 12.2.2 · TypeScript 7.0.2 · Biome 2.6.7 · Vitest 5.1.0. Development tools
 
 ## 5. Prohibited capabilities (regardless of which crate provides them)
 
-- A custom SMTP protocol stack or SMTP parser — lettre is the only implementation.
+- Any third-party SMTP protocol stack or parser (lettre, mail-send, etc.) — the SMTP client is hand-written per ADR-0017.
 - Insecure TLS toggles, plaintext fallback, certificate/hostname bypass.
 - URL, HTTP, or remote attachment fetching.
 - Connection pooling, automatic retry, internal queues, workers, schedulers, persistence.
@@ -70,3 +72,7 @@ A dependency without a recorded justification is rejected in review even if it c
 ## 7. Allowed licenses
 
 Pre-approved for direct dependencies: Apache-2.0, MIT, BSD-3-Clause, ISC, Unicode-3.0, CDLA-Permissive-2.0. Any other license requires an explicit recorded decision before merge, compatible with distributing the native addon and npm package.
+
+## 8. ADR-0017 superseding ADR-0002 — adoption status
+
+The native SMTP client decision supersedes sendust ADR-0002 (lettre choice) and removes the custom-SMTP prohibition above. This skills repo records the decision; the sendust repository must adopt it as ADR-0017 with synchronized dependency policy, toolchain baseline pins (tokio, rustls, webpki-roots), the P06 phase plan, and gate updates before P06 begins — its docs-sync rules apply. Until that ADR exists in sendust, agents must not implement against lettre and must flag the pending sync as BLOCKED sendust-repo work.

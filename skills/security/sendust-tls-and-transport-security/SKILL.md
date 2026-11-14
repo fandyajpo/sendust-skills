@@ -7,7 +7,7 @@ description: Keep Sendust SMTP connections inside the TLS envelope — implicit 
 
 > Scope: this skill only serves building Sendust — the standalone native email delivery engine (Rust core → native Node-API addon → thin TS facade). Anything else (SMTP server, hosted service, queue, alternate transport, pure-JS engine) is out of scope.
 
-Sources in the sendust repository: `docs/engineering/security-strategy.md` §3–§4, `docs/architecture/system-design.md` §2.6, `docs/engineering/test-harness-contract.md`, ADR-0002 (lettre), ADR-0003 (TLS rustls/ring/webpki). Related abuse cases: AB-01, AB-02, AB-08, AB-09 (see [sendust-threat-register](../sendust-threat-register/SKILL.md)).
+Sources in the sendust repository: `docs/engineering/security-strategy.md` §3–§4, `docs/architecture/system-design.md` §2.6, `docs/engineering/test-harness-contract.md`, ADR-0003 (TLS rustls/ring/webpki), ADR-0017 (native SMTP client, superseding ADR-0002). Related abuse cases: AB-01, AB-02, AB-08, AB-09 (see [sendust-threat-register](../sendust-threat-register/SKILL.md)).
 
 **See also:** [sendust-core-semantics](../../architecture/sendust-core-semantics/SKILL.md) for the SMTP orchestration sequence · [sendust-redaction-and-diagnostics](../sendust-redaction-and-diagnostics/SKILL.md) for credential handling · [sendust-knowledge-base](../../references/sendust-knowledge-base/SKILL.md) for TLS references.
 
@@ -18,13 +18,13 @@ Sources in the sendust repository: `docs/engineering/security-strategy.md` §3�
 - rustls 0.23 with the `ring` provider and `webpki-roots` trust anchors; TLS 1.2 minimum, TLS 1.3 preferred.
 - SNI uses the configured relay host.
 - Certificate failures close the connection **before** AUTH or MAIL — never attempt AUTH on a failed-verification connection.
-- lettre's dangerous certificate/hostname bypass methods must never be called.
+- No verification bypass exists or may be added: no option, env var, config file, hidden flag, or rustls dangerous verifier configuration.
 - Enterprise private CAs are not trusted in MVP (webpki-roots limitation) — a documented trade-off, not a defect.
-- Build `TlsParameters` with `CertificateStore::WebpkiRoots`. Implicit TLS uses `connect_tokio1` with TLS parameters; STARTTLS connects without TLS, then requires `can_starttls()` and `starttls()` before AUTH. No plaintext fallback after STARTTLS failure.
+- The TLS connector is rustls configured with `webpki-roots` anchors; no code path may construct a client config that disables or weakens verification. Implicit TLS: the TLS stream is established before the SMTP greeting is read. STARTTLS: plaintext EHLO → STARTTLS → 220 → TLS handshake → EHLO again (pre-TLS capabilities discarded) before AUTH — full procedure in [sendust-smtp-client-protocol](../sendust-smtp-client-protocol/SKILL.md). No plaintext fallback after a failed or refused STARTTLS.
 
 ## 2. Authentication policy
 
-- PLAIN and LOGIN only (`Mechanism::Plain` / `Mechanism::Login`); unsupported mechanisms rejected at configuration time (`CONFIG_UNSUPPORTED_AUTH`).
+- PLAIN and LOGIN only, negotiated from the relay's EHLO `AUTH` advertisements; unsupported mechanisms rejected at configuration time (`CONFIG_UNSUPPORTED_AUTH`).
 - AUTH only after TLS is established.
 - Credentials are owned Rust strings; never copied into errors, logs, or result details; never persisted by Sendust.
 - Require AUTH response 235; arbitrary 2xx/3xx responses are not authenticated.

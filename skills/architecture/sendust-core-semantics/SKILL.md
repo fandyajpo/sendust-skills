@@ -9,15 +9,15 @@ description: Preserve approved Sendust runtime semantics — deterministic valid
 
 Authoritative sources in the sendust repository: `docs/architecture/system-design.md`, `error-model.md`, `data-flow.md`, `public-api.md`, ADR-0005 (recipient partial failure), ADR-0006 (single send lifecycle), ADR-0007 (timeout budgets), ADR-0009 (hard caps), ADR-0013 (error taxonomy). Exact Rust names are implementation details; the approved semantics are fixed and must not drift.
 
-**See also:** [sendust-crate-and-module-boundaries](../sendust-crate-and-module-boundaries/SKILL.md) for where each behavior lives · [sendust-input-validation-and-caps](../../security/sendust-input-validation-and-caps/SKILL.md) for the per-field rules · [sendust-tls-and-transport-security](../../security/sendust-tls-and-transport-security/SKILL.md) for TLS/auth behavior.
+**See also:** [sendust-crate-and-module-boundaries](../sendust-crate-and-module-boundaries/SKILL.md) for where each behavior lives · [sendust-input-validation-and-caps](../../security/sendust-input-validation-and-caps/SKILL.md) for the per-field rules · [sendust-tls-and-transport-security](../../security/sendust-tls-and-transport-security/SKILL.md) for TLS/auth behavior · [sendust-smtp-client-protocol](../sendust-smtp-client-protocol/SKILL.md) for the SMTP wire-protocol spec.
 
 ## 1. Data and control flow (per send)
 
 1. Caller constructs a transport with relay, TLS, auth, timeout, attachment, and cap options — validation of transport options is synchronous at `createTransport()`.
 2. `send(message)` synchronously prepares an owned native operation, snapshots JS-owned buffers/strings, and reserves the single-send slot; synchronous preparation failures become Promise rejections.
 3. The binding schedules the owned operation on napi-managed Tokio 1.
-4. Core validates in deterministic order, composes MIME, enforces caps, and opens one `AsyncSmtpConnection` through lettre.
-5. lettre performs connect, TLS/required STARTTLS, AUTH, MAIL, one RCPT command per recipient, and one DATA transaction for the accepted-recipient subset.
+4. Core validates in deterministic order, composes MIME, enforces caps, and opens one SMTP connection through the native client.
+5. The native client performs connect, TLS/required STARTTLS, AUTH, MAIL, one RCPT command per recipient, and one DATA transaction for the accepted-recipient subset.
 6. Core maps the final observable state to `accepted`, `rejected`, or `unknown` and closes the session.
 7. The binding converts the result or error into a stable JS object; the wrapper returns it unchanged.
 
@@ -66,17 +66,16 @@ A failure at any step returns one error with a stable code. No partial send begi
 | total | 120 s | the entire send including composition wait and DATA |
 | close | 125 s | the bounded close drain |
 
-Single absolute deadline per send: `start + min(total, remaining close budget)`. lettre's inner timeout only bounds TCP attempts — Sendust must wrap the complete connection future. Report only coarse stage boundaries (connection setup; AUTH; MAIL; each RCPT; DATA command; DATA body+terminator+final response; cleanup); never claim internal socket sub-stage attribution. Values are integers ≥ 1 s; zero, negative, sub-second, NaN, infinity, and inconsistent combinations are rejected (`VALIDATION_INVALID_TIMEOUT`).
+Single absolute deadline per send: `start + min(total, remaining close budget)`. The native client owns every stage's outer deadline — connect covers DNS+TCP+greeting+EHLO+TLS/STARTTLS as one budget; no third-party inner timeout may mask a stall. Report only coarse stage boundaries (connection setup; AUTH; MAIL; each RCPT; DATA command; DATA body+terminator+final response; cleanup); never claim internal socket sub-stage attribution. Values are integers ≥ 1 s; zero, negative, sub-second, NaN, infinity, and inconsistent combinations are rejected (`VALIDATION_INVALID_TIMEOUT`).
 
 ## 5. SMTP orchestration rules
 
-- One `AsyncSmtpConnection` per send (no pool), created with lettre's public lower-level async API — required for observing each RCPT reply individually. Sendust does not parse SMTP or format commands itself.
-- lettre features pinned with `default-features = false` plus `smtp-transport`, `tokio1-rustls`, `ring`, `webpki-roots` (excludes pool and native-tls).
-- AUTH: lettre `Credentials`, only `Mechanism::Plain`/`Mechanism::Login`, after TLS; require response 235 — arbitrary 2xx/3xx is not authenticated.
-- One `MAIL FROM`; one `RCPT TO` per recipient via `AsyncSmtpConnection::command`; record exact 2xx acceptance and 4xx/5xx rejection via `Error::status()` — lettre treats both 2xx and 3xx as generic positive, so check classes explicitly.
+- One native SMTP connection per send (no pool), hand-written per RFC 5321 over tokio 1 + rustls 0.23 (ADR-0017 superseding ADR-0002) — per-RCPT replies are observed by design. Wire-protocol spec: [sendust-smtp-client-protocol](../sendust-smtp-client-protocol/SKILL.md).
+- AUTH: only PLAIN and LOGIN, after TLS; require response 235 — arbitrary 2xx/3xx is not authenticated.
+- One `MAIL FROM`; one `RCPT TO` per recipient via `AsyncSmtpConnection::command`; record exact 2xx acceptance and 4xx/5xx rejection with the client's reply classifier — 3xx intermediate replies are never counted as success by design.
 - Continue after ordinary RCPT refusals; RCPT `421` closes the session and stops the envelope. If no recipient is accepted or 421 occurs, do not issue DATA.
 - Require DATA command reply 354 before body bytes. Positive final DATA reply (2xx) → overall `accepted`; RCPT-accepted recipients become `accepted`, explicit RCPT refusals stay `rejected`. Explicit negative final DATA reply (4xx/5xx) → overall `rejected`, including RCPT-accepted recipients.
-- A non-final/unexpected 3xx after transmission, or a transport error once `message()` begins, yields `unknown` — lettre exposes no public checkpoint proving final disposition. No retry.
+- A non-final/unexpected 3xx after transmission, or a transport error once `message()` begins, yields `unknown` — the client must not claim a final disposition unless it received the final reply. No retry.
 - Connection, TLS, and AUTH failures before message submission are operational errors, never `rejected` delivery outcomes.
 
 ## 6. MIME structure (deterministic)

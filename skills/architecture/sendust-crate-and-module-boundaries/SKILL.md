@@ -1,6 +1,6 @@
 ---
 name: sendust-crate-and-module-boundaries
-description: Apply Sendust structural rules — the two-crate workspace, the TS → napi → core → lettre call path, module ownership inside sendust-core (ADR-0016), and dependency direction. Use when creating or moving code between modules, or touching the TypeScript/native/core boundaries.
+description: Apply Sendust structural rules — the two-crate workspace, the TS → napi → core → native SMTP client call path, module ownership inside sendust-core (ADR-0016), and dependency direction. Use when creating or moving code between modules, or touching the TypeScript/native/core boundaries.
 ---
 
 # Sendust crate and module boundaries
@@ -26,7 +26,7 @@ crates/sendust-napi    Node-API adapter: copy inputs, map errors, own async task
 crates/sendust-core    validation, message model, MIME, transport state, SMTP orchestration
         │  uses
         ▼
-lettre 0.11.23 (Tokio 1 executor)   SMTP session, TLS, AUTH, DATA
+native SMTP client (tokio 1 + rustls 0.23 + webpki-roots)   SMTP session, TLS, AUTH, DATA
         ▼
 Consumer-configured SMTP relay
 ```
@@ -38,9 +38,11 @@ Boundary responsibilities and reasons:
 | TypeScript wrapper | public names, types, defaults documentation, error classes, module formats | small native surface; JS ergonomics change without recompiling Rust |
 | napi adapter | convert JS values to owned Rust values; map results/errors; schedule async work | isolates all Node-API and unsafe-adjacent code |
 | Rust core | all protocol-independent policy and all SMTP/MIME behavior | testable without Node; enforces validation, limits, lifecycle |
-| lettre | SMTP/TLS/AUTH/MIME primitives | avoids maintaining an SMTP client; pinned |
+| Native SMTP client | SMTP session, TLS, AUTH, DATA transport | full protocol control; no third-party SMTP code; per ADR-0017 |
 
 The TypeScript wrapper is deliberately thin. It validates only public shape and option compatibility that generated types cannot express. It MUST NOT reinterpret core statuses or implement SMTP/MIME policy — this prevents two implementations from drifting.
+
+> **Decision note (ADR-0017):** the SMTP transport is the in-house native client (tokio 1 + rustls 0.23), superseding ADR-0002's lettre choice. The sendust repository must record ADR-0017 (superseding ADR-0002) with synchronized policy, P06 plan, and gate updates before P06 begins — see the README Authority note.
 
 ## 2. The two-crate boundary
 
@@ -64,13 +66,13 @@ Logical modules inside `sendust-core/src/` (folder names may flex, ownership mus
 | `mime/` | MIME tree, encoding, wire-size accounting |
 | `delivery/` | send use-case orchestration and delivery certainty |
 | `ports/` | narrow internal outbound delivery contract |
-| `transports/smtp/` | lettre session, TLS, AUTH, envelope, RCPT/DATA — the only MVP adapter |
+| `transports/smtp/` | native SMTP session (tokio + rustls), TLS, AUTH, envelope, RCPT/DATA — the only MVP adapter |
 | `lifecycle/` | open/closing/closed, BUSY, bounded close |
 | `errors/` and `results/` | internal error taxonomy; accepted/rejected/unknown outcomes |
 
 Dependency direction enforced by static architecture checks (`scripts/check-architecture.mjs`, re-audited at P12):
 
-- Domain modules (address, message, config value types, results, core validation) must not import lettre, SMTP session types, napi, Node, or JS runtime APIs.
+- Domain modules (address, message, config value types, results, core validation) must not import SMTP session types or the native client's wire types, napi, Node, or JS runtime APIs.
 - `delivery` depends on the internal port in `ports/`; `transports::smtp` implements that port and is the only MVP adapter.
 - `lib.rs` re-exports only what `sendust-napi` and tests need; internal modules are private by default.
 - No crate per module, no public plugin system, no runtime-specific business engines, no empty feature hooks, no extra transport implementations.

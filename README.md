@@ -11,6 +11,7 @@ These skills exist to guide agents to build **Sendust as a standalone, native em
 In scope — everything that serves building that native engine:
 
 - Rust core behavior: validation, message model, MIME, transport state machine, SMTP orchestration.
+- The native SMTP client: a hand-written RFC 5321 implementation over tokio 1 + rustls 0.23 per ADR-0017 — no third-party SMTP library anywhere in the MVP.
 - The native binding (`sendust-napi`), its owned-memory conversion and error mapping.
 - The thin TypeScript facade, the isolated native loader, and the pinned toolchain that compiles the native artifact.
 - Tests, CI evidence, security envelope, and packaging/distribution of the native artifact.
@@ -38,6 +39,7 @@ If any task or change drifts toward these, stop and re-anchor to the sendust ADR
 | --- | --- |
 | [sendust-crate-and-module-boundaries](skills/architecture/sendust-crate-and-module-boundaries/SKILL.md) | Creating or moving code between modules, or touching the TypeScript/native/core boundaries |
 | [sendust-core-semantics](skills/architecture/sendust-core-semantics/SKILL.md) | Implementing or modifying `send()`, `close()`, validation, MIME, or error mapping |
+| [sendust-smtp-client-protocol](skills/architecture/sendust-smtp-client-protocol/SKILL.md) | Implementing or testing the native SMTP client inside `transports::smtp` |
 | [sendust-dependency-policy](skills/architecture/sendust-dependency-policy/SKILL.md) | Adding or changing any Rust crate, npm dependency, or GitHub Action |
 
 ### documentation — keeping the sources of truth consistent
@@ -80,5 +82,9 @@ These skills are summaries. They never override Sendust's own documentation. If 
 2. `docs/product/requirements.md` owns product behavior.
 3. Accepted ADRs own architecture decisions.
 4. `docs/phases/phase-XX.md` owns task-level detail.
+
+### ADR-0017 superseding ADR-0002 (native SMTP client)
+
+The SMTP transport is the in-house native client (tokio 1 + rustls 0.23), superseding sendust ADR-0002's lettre choice and the custom-SMTP prohibition in its dependency policy. This repo records the intended decision; the sendust repository must adopt it as ADR-0017 (superseding ADR-0002) with synchronized dependency policy, toolchain baseline pins, the P06 phase plan, and gate updates before P06 begins — per its own docs-sync rules. Until that ADR exists in sendust, agents must not implement against lettre and must flag the pending synchronization as BLOCKED sendust-repo work in their reports.
 
 Planning baseline of the source docs: 2026-11-13. P00–P03 completed; P04–P18 not started at the time these skills were written.

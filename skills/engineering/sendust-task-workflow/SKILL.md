@@ -68,7 +68,7 @@ If you cannot execute terminal commands, builds, tests, or linters:
 
 - Exactly two Rust crates: `crates/sendust-core` (no Node/napi/JS dependency) and `crates/sendust-napi` (thin adapter depending on core, never the reverse).
 - TypeScript owns the public facade and the isolated native loader, not SMTP/MIME business policy.
-- SMTP via lettre is the only MVP outbound transport; SMTP protocol behavior lives only in `transports::smtp`.
+- SMTP is delivered by the in-house native client (tokio 1 + rustls 0.23, per ADR-0017 superseding ADR-0002); SMTP protocol behavior lives only in `transports::smtp`.
 - TLS certificate and hostname verification are mandatory; no insecure bypass or plaintext fallback.
 - One active send per transport (second concurrent send fails with BUSY); close is explicit, idempotent, and bounded.
 - No placeholders, `todo!`, `unimplemented!`, or fake success paths reported as complete.

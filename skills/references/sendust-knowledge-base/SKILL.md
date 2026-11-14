@@ -26,7 +26,7 @@ When sources disagree, resolve in this order (consistent with the sendust AI imp
 | --- | --- | --- |
 | P04 Rust core | 1, 2, 3 | Rust Book/Reference/std, tokio, rustls/ring, RFC 5321/5322, RFC 3463 |
 | P05 Binding | 8, 9, 10, 11 | Node N-API/addons, napi-rs, Deno FFI + node compat, Bun FFI/node APIs |
-| P06 SMTP | 4, 6 | RFC 5321, 6409, 4954, 3207, 7504, 6531, 2920, 3030; lettre docs; provider docs for interop |
+| P06 SMTP | 4, 6 | RFC 5321, 6409, 4954, 3207, 7504, 6531, 2920, 3030, 3463, 1870; native client protocol; lettre/mail-send as references only; provider docs for interop |
 | P07 MIME | 5 | RFC 2045–2049, 2183, 2231, 2387, 2392, 3676; IANA media types; mail-builder/mail-parser as references |
 | P08 Attachments | 5, 3 | RFC 2183/2231; secrecy/zeroize for bounded handling; filesystem fixtures |
 | P09 Public API | 11, 8 | TypeScript handbook (modules, declarations, publishing), Node packages/ESM |
@@ -48,7 +48,7 @@ Match the domain to the task at hand; do not consult everything for every task.
 - Verify crate versions, feature flags, and runtime compatibility against the pinned versions in `docs/engineering/toolchain-baseline.md` and the admission rules in `docs/engineering/dependency-policy.md` in the sendust repository.
 - Do not assume every SMTP extension is universally supported by every provider; provider docs (SES, Gmail, Exchange, Resend, Postmark, Mailgun, SendGrid, Brevo) are behavioral references for interoperability, not standards.
 - Validate protocol behavior through automated tests and interoperability tests, and record evidence per the sendust-evidence-and-gates skill. Never claim RFC compliance without corresponding test evidence.
-- Crate docs are pinned to the sendust versions (lettre 0.11.23, napi 3.16.2, rustls 0.23, tokio 1.x); behavior of a different version is irrelevant unless the baseline changes.
+- Pinned dependencies are napi 3.16.2, rustls 0.23, and tokio 1.x; lettre and mail-send remain implementation references only — not dependencies (ADR-0017 supersedes ADR-0002's lettre choice).
 
 ## 4. Implementation guidelines (normative)
 
